@@ -9,7 +9,7 @@ export default (app: Router) => {
 
   route.get(
     '/:id',
-    middlewares.attachCurrentUser,
+    middlewares.attachCurrentCustomer,
     async (req: Request, res: Response) => {
       return res.json({customer: req.currentCustomer}).status(200);
     }

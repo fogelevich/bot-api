@@ -1,5 +1,5 @@
-import attachCurrentUser from './attachCustomer';
+import attachCurrentCustomer from './attachCustomer';
 
 export default {
-  attachCurrentUser
+  attachCurrentCustomer
 };

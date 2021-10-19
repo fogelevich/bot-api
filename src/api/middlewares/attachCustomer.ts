@@ -6,7 +6,7 @@ import Logger from '../../loaders/logger';
 /**
  * Attach customer to req
  */
-const attachCurrentUser = async (req: Request, res: Response, next) => {
+const attachCurrentCustomer = async (req: Request, res: Response, next) => {
   try {
     const id = parseInt(req.params.id, 10);
 
@@ -29,4 +29,4 @@ const attachCurrentUser = async (req: Request, res: Response, next) => {
   }
 };
 
-export default attachCurrentUser;
+export default attachCurrentCustomer;
