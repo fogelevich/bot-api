@@ -1,36 +1,29 @@
 import mongoose from 'mongoose';
 
 export interface CustomerI {
-  _id: string;
-  customer_id: number;
+  _id: number;
   promocode: string;
-  attempts: number;
 }
 
-const Customer = new mongoose.Schema(
-  {
+export default mongoose.model<CustomerI>(
+  'Customer',
+  new mongoose.Schema({
     // chat or user id
-    customer_id: {
-      type: Number,
-      required: [true, 'Please, enter id'],
-      index: true,
-      unique: true
-    },
+    _id: Number,
     promocode: {
       type: String,
       index: true
-    },
-    attempts: {
-      type: Number,
-      min: 0,
-      max: [3, 'No more attempts'],
-      default: 0
     }
-  },
-  {timestamps: true}
-);
-
-export default mongoose.model<CustomerI & mongoose.Document>(
-  'Customer',
-  Customer
+    //   game: {
+    //     type: new mongoose.Schema({
+    //       attempts: {
+    //         type: Number,
+    //         min: 0,
+    //         max: [3, 'No more attempts'],
+    //         default: 0
+    //       },
+    //       createdAt: {type: Date, expires: 30, default: Date.now}
+    //     })
+    //   }
+  })
 );

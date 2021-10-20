@@ -63,13 +63,15 @@ function randomWeighted(weighted: any) {
   }
 }
 
+type DiscountT = '10percent' | '15percent' | 'noDiscount';
+
 export function randomSlot() {
   const carsEmojiArr = shuffleArray(
     combinate(['\u{1f69c}', '\u{1f69a}', '\u{1f697}'], 3)
   );
 
-  // 10% discount - probability 25% | 15% discount - probability 25%
-  const discount = randomWeighted({
+  // 10% discount - probability 20% | 15% discount - probability 5%
+  const discount: DiscountT = randomWeighted({
     '10percent': 4,
     '15percent': 1,
     noDiscount: 15

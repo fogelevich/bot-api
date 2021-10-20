@@ -1,5 +1,5 @@
-import attachCurrentCustomer from './attachCustomer';
+import attachCurrentCustomerGame from './attachCustomerGame';
 
 export default {
-  attachCurrentCustomer
+  attachCurrentCustomerGame
 };
