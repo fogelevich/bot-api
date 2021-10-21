@@ -1,11 +1,19 @@
 import {CustomerModel, GameModel} from '../models';
 
-import {CustomerGameT} from '../types';
 import Logger from '../loaders/logger';
 import fetch from 'cross-fetch';
 import {randomSlot} from '../utils/randomSlot';
 
-export const play = async (customer_id: number): Promise<CustomerGameT> => {
+type PlayGameT = {
+  id: number;
+  attempts: number;
+  promocode: string | null;
+  discount: 5 | 10 | 15 | null;
+  win: boolean;
+  slot: string[];
+};
+
+export const play = async (customer_id: number): Promise<PlayGameT> => {
   try {
     // Find Or Create Game for Customer
     const record = await GameModel.findOneAndUpdate(
@@ -43,25 +51,40 @@ export const play = async (customer_id: number): Promise<CustomerGameT> => {
           {_id: customer_id},
           {$push: {promocodes: {promocode: id, shop_id, discount, slot}}}
         );
+        await GameModel.updateOne(
+          {customer: customer_id},
+          {attempts: 3, win: true, promocode: id, discount, slot}
+        );
+      } else {
+        await GameModel.updateOne(
+          {customer: customer_id},
+          {
+            attempts: previouseAttempts + 1,
+            win: false,
+            promocode: null,
+            discount: null,
+            slot
+          }
+        );
       }
-      await GameModel.updateOne(
-        {customer: customer_id},
-        {attempts: previouseAttempts + 1}
-      );
     }
 
     const updatedRecordGame = await GameModel.findOne({
       customer: customer_id
-    }).populate('customer');
+    });
 
     if (!updatedRecordGame) throw Error('Not found update record Game');
 
     const {
-      customer: {_id: id, promocodes},
-      attempts
+      _id: id,
+      attempts,
+      promocode,
+      discount,
+      slot,
+      win
     } = updatedRecordGame.toObject();
 
-    return {id, promocodes, attempts};
+    return {id, promocode, attempts, slot, discount, win};
   } catch (error) {
     Logger.error('🔥 Error in srvice - play: ', error);
     throw error;
