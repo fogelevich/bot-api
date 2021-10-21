@@ -11,7 +11,7 @@ export default (app: Router) => {
     '/:id',
     middlewares.attachCurrentCustomerGame,
     async (req: Request, res: Response) => {
-      return res.json({customer: req.currentCustomerGame}).status(200);
+      return res.json(req.currentCustomerGame).status(200);
     }
   );
 };

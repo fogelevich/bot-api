@@ -1,10 +1,19 @@
-import {CustomerI} from '../models';
-
-export type CurrentCustomerGameT = CustomerI & {attempts?: number};
+export type CustomerGameT = {
+  id: number;
+  promocodes:
+    | {
+        promocode: string;
+        shop_id: string;
+        discount: 5 | 10 | 15;
+        slot: string[];
+      }[]
+    | [];
+  attempts?: number;
+};
 declare global {
   namespace Express {
     export interface Request {
-      currentCustomerGame: CurrentCustomerGameT;
+      currentCustomerGame: CustomerGameT;
     }
   }
 }

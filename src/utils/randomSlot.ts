@@ -77,7 +77,7 @@ export function randomSlot() {
     noDiscount: 15
   });
 
-  let slot = '';
+  let slot: string[] = [];
   let win = false;
   switch (discount) {
     case '10percent':

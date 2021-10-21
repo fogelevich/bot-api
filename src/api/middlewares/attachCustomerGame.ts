@@ -1,7 +1,6 @@
 import {CustomerModel, GameModel} from '../../models';
 import {Request, Response} from 'express';
 
-import {CurrentCustomerGameT} from '../../types';
 import Logger from '../../loaders/logger';
 
 /**
@@ -9,31 +8,32 @@ import Logger from '../../loaders/logger';
  */
 const attachCurrentCustomerGame = async (req: Request, res: Response, next) => {
   try {
-    const id = parseInt(req.params.id, 10);
+    const paramsId = parseInt(req.params.id, 10);
 
+    //  TODO: add to methods service
     // Find or Create Customer to attach
-    let customerRecord = await CustomerModel.findById(id);
-    if (!customerRecord && id) {
-      customerRecord = await CustomerModel.create({
-        _id: id
-      });
-    }
+    const customerRecord = await CustomerModel.findOneAndUpdate(
+      {_id: paramsId},
+      {},
+      {
+        new: true,
+        upsert: true // Make this update into an upsert
+      }
+    );
 
-    if (!customerRecord) throw Error('Create new customer');
+    if (!customerRecord) throw Error('Create or find customer');
 
     // Customer Object
-    const currentCustomerGame: CurrentCustomerGameT = customerRecord.toObject();
+    const {_id: id, promocodes} = customerRecord.toObject();
 
+    //  TODO: add to methods service
     // Attach Game if document for user exist
-    const gameRecord = await GameModel.findOne({customer: id})
-      .populate('customer')
-      .exec();
+    const gameRecord = await GameModel.findOne({customer: paramsId}).populate(
+      'customer'
+    );
+    const {attempts = 0} = gameRecord?.toObject() || {};
 
-    if (gameRecord) {
-      currentCustomerGame.attempts = gameRecord.toObject().attempts;
-    }
-
-    req.currentCustomerGame = {...currentCustomerGame};
+    req.currentCustomerGame = {id, promocodes, attempts};
     return next();
   } catch (error) {
     Logger.error('🔥 Error attaching customer to req: ', error);

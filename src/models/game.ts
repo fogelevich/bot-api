@@ -18,6 +18,6 @@ export default mongoose.model<GameI>(
     },
     customer: {type: Number, ref: 'Customer'},
     // TODO: add to config!!!
-    createdAt: {type: Date, expires: 30, default: Date.now}
+    createdAt: {type: Date, expires: '1d', default: Date.now}
   })
 );
