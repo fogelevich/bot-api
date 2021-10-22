@@ -1,4 +1,5 @@
 export type CustomerGameT = {
+  // TODO: id to string
   id: number;
   promocodes:
     | {

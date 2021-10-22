@@ -24,7 +24,7 @@ const attachCurrentCustomerGame = async (req: Request, res: Response, next) => {
     if (!customerRecord) throw Error('Create or find customer');
 
     // Customer Object
-    const {_id: id, promocodes} = customerRecord.toObject();
+    const {id, promocodes} = customerRecord.toJSONFor();
 
     //  TODO: add to methods service
     // Attach Game if document for user exist

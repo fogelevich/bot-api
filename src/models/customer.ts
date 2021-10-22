@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+import mongoose, {Schema} from 'mongoose';
 
-export interface CustomerI {
+interface CustomerI {
   _id: number;
   promocodes:
     | {
@@ -12,19 +12,27 @@ export interface CustomerI {
     | [];
 }
 
-// const PromocodeModel = new Schema({ name: String });
+type CustomerJSONT = {id: number} & Omit<CustomerI, '_id'>;
 
-export default mongoose.model<CustomerI>(
-  'Customer',
-  new mongoose.Schema({
-    // chat or user id
-    _id: Number,
-    promocodes: {
-      type: [],
-      index: true
-      // default: () => {
-      //   return null;
-      // }
-    }
-  })
-);
+interface CustomerDocumentI extends CustomerI {
+  toJSONFor: () => CustomerJSONT;
+}
+
+const CustomerSchema = new Schema<CustomerDocumentI>({
+  _id: Number,
+  promocodes: {
+    type: [],
+    index: true
+  }
+});
+
+CustomerSchema.methods.toJSONFor = function () {
+  return {
+    id: this._id,
+    promocodes: this.promocodes
+  };
+};
+
+const Customer = mongoose.model<CustomerDocumentI>('Customer', CustomerSchema);
+
+export default Customer;
